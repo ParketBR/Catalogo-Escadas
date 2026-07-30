@@ -135,7 +135,9 @@
   const stack = document.querySelector('#madeiras-tipos [data-floor3d-stack]');
   if (!stage || !stack) return;
 
-  let rotX = 58, rotZ = -38;
+  let rotX = 66, rotZ = -34;
+  /* escada: gira só na horizontal (inclinação travada) */
+  const soHorizontal = stack.classList.contains('esc-stack');
   const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
   let raf = 0;
   const render = () => {
@@ -149,7 +151,7 @@
   const move = (x, y) => {
     if (!dragging) return;
     rotZ -= (x - lastX) * 0.4;
-    rotX = clamp(rotX - (y - lastY) * 0.4, 8, 88);
+    if (!soHorizontal) rotX = clamp(rotX - (y - lastY) * 0.4, 8, 88);
     lastX = x; lastY = y;
     schedule();
   };
@@ -159,6 +161,11 @@
   const onTouchMove = (e) => {
     if (!dragging) return;
     const t = e.touches[0];
+    /* girando só na horizontal: se o gesto é vertical, solta e deixa a página rolar */
+    if (soHorizontal && Math.abs(t.clientY - lastY) > Math.abs(t.clientX - lastX)) {
+      end();
+      return;
+    }
     if (e.cancelable) e.preventDefault();
     move(t.clientX, t.clientY);
   };

@@ -254,7 +254,7 @@
         {
           key: 'escadas',
           title: 'Escadas',
-          desc: 'A ascensão da forma. Design esculpido em madeira para conectar níveis com elegância absoluta.',
+          desc: 'Escadas revestidas, estruturais e flutuantes desenvolvidas com madeiras nobres como Ipê, Cumaru, Carvalho Europeu e Freijó. Cada degrau, espelho e guarda-corpo executado sob medida — com precisão milimétrica, acabamento impecável e total coerência com a linguagem arquitetônica do projeto.',
           cover: 'escadas/hero.webp',
           videos: [
             { type: 'youtube', id: 'J82KxeHE1Yg', vertical: true, title: 'O detalhe que define o projeto premium é aquele que ninguém vê' }
@@ -1187,20 +1187,10 @@
         // Ordenadas por luminância média da textura: da mais clara à mais escura.
         // Descrições oficiais de parket.com.br (seção Revestimentos).
         const ESPECIES = [
-          ['cabreuva-branca', 'Cabreúva Branca', 'Mais clara e delicada, é valorizada por sua suavidade e por criar atmosferas leves e acolhedoras.'],
-          ['pinho-de-riga', 'Pinho de Riga', 'Clara e de tom amarelado suave, com nós marcantes que remetem à madeira das construções históricas brasileiras.'],
-          ['tauari', 'Tauari', 'Clara e homogênea, o tauari ilumina os ambientes, oferecendo um visual moderno e minimalista.'],
-          
-          
-          ['peroba-do-campo', 'Peroba do Campo', 'Tradicional e charmosa, sua coloração variada entre o rosado e o dourado confere autenticidade e beleza natural.'],
-          ['cabreuva-dourada', 'Cabreúva Dourada', 'Apresenta brilho natural e cor dourada, com veios elegantes que proporcionam luxo e vitalidade.'],
-          ['catuaba', 'Catuaba', 'Madeira de cor intensa e veios bem definidos, ideal para quem busca personalidade e impacto estético.'],
-          
-          ['pau-ferro', 'Pau Ferro', 'De contraste intenso entre marrom e bege, destaca-se pela beleza exótica e pelo caráter contemporâneo.'],
-          
+          ['carvalho-europeu', 'Carvalho Europeu', 'Nobreza atemporal em tons claros e acetinados, com veios suaves que trazem equilíbrio entre tradição e modernidade.'],
+          ['freijo', 'Freijó', 'De coloração amendoada e desenho discreto, confere sofisticação serena e um acabamento naturalmente elegante.'],
           ['cumaru', 'Cumaru', 'Madeira extremamente resistente, de cor castanho-avermelhada, indicada para projetos que exigem durabilidade e imponência.'],
-          
-          
+          ['ipe-tabaco', 'Ipê', 'Densa e imponente, de tom castanho profundo, é referência em resistência mecânica e presença marcante no ambiente.'],
         ];
         const n = ESPECIES.length;
         const pad = (v) => String(v).padStart(2, '0');

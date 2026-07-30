@@ -1122,6 +1122,223 @@
   will-change: transform;
 }
 
+/* ─── ESCADA 3D — degraus flutuantes: cada degrau é uma peça maciça ─── */
+#madeiras-tipos .esc-stage {
+  /* nº de degraus (precisa bater com a quantidade de .esc-degrau no HTML) */
+  --n: 7;
+  /* largura do degrau (X), profundidade (Y), espessura da peça (Z)
+     e altura de espelho (passo vertical entre um degrau e o seguinte) */
+  --sw: clamp(150px, 32vw, 250px);
+  --sd: clamp(40px, 8.5vw, 60px);
+  --st: clamp(13px, 2.6vw, 19px);
+  --sh: clamp(28px, 6.2vw, 44px);
+  /* espelho: mesma espessura do degrau e sem bocel — piso e espelho formam
+     uma única dobra contínua de madeira (perfil em zigue-zague) */
+  --rt: var(--st);
+  --bo: 0px;
+  /* guarda-corpo: altura do vidro e espessura do corrimão */
+  --gh: clamp(58px, 12vw, 86px);
+  --gr: clamp(5px, 1vw, 8px);
+  /* profundidade da peça do degrau: o passo (--sd) mais o bocel, para o
+     degrau avançar sobre o espelho e os dois se encostarem sem folga */
+  --td: calc(var(--sd) + var(--bo));
+  /* textura única de toda a escada — trocar aqui muda a madeira inteira */
+  --esc-madeira: url('texturas/carvalho-europeu.jpg');
+  /* dimensões do palco: pegada da escada em planta */
+  --w: var(--sw);
+  --h: calc(var(--n) * var(--sd));
+  --t: var(--sh);
+  /* folga extra embaixo: o lance projetado ultrapassa a caixa do palco */
+  margin-bottom: calc(var(--sh) * 2.6);
+}
+
+/* vista inicial 3/4: mais de lado, para ler o perfil e o vão entre os degraus */
+#madeiras-tipos .esc-stack {
+  transform: rotateX(66deg) rotateZ(-34deg);
+}
+
+/* gira só na horizontal: a inclinação é fixa, então a rolagem vertical
+   da página continua funcionando por cima do objeto no toque */
+#madeiras-tipos .esc-stage {
+  touch-action: pan-y;
+}
+
+/* ─── GUARDA-CORPO — painel de madeira à direita, sobre a borda do degrau ───
+   Um plano só, paralelo à lateral da escada, inclinado no ângulo do lance. */
+#madeiras-tipos .esc-guarda {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  /* a razão --sh/--sd é praticamente constante em qualquer viewport, então o
+     ângulo do lance é fixo (~36°) e o comprimento sai por proporção — sem
+     depender de atan2()/hypot(), que faltam em navegadores antigos */
+  --ga: -36deg;
+  --gl: calc(var(--n) * var(--sd) * 1.24);
+  --gx: calc(var(--sw) / 2);
+  --gz: calc(var(--gh) / 2 + var(--st));
+}
+
+#madeiras-tipos .esc-guarda-painel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--gh);
+  height: var(--gl);
+  transform: translate(-50%, -50%) translate3d(var(--gx), 0, var(--gz)) rotateY(90deg) rotateZ(var(--ga));
+  background-image: linear-gradient(100deg, rgba(255, 255, 255, .06), rgba(40, 22, 8, .3)),
+    var(--esc-madeira);
+  background-size: cover;
+  background-position: center;
+  background-color: #a8764a;
+  box-shadow: inset 0 0 0 1px rgba(60, 34, 16, .2);
+  backface-visibility: visible;
+}
+
+/* rodapé do painel — encontro com os degraus */
+#madeiras-tipos .esc-guarda-painel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: calc(var(--gr) * .6);
+  height: 100%;
+  background: linear-gradient(270deg, rgba(30, 16, 6, .45), rgba(30, 16, 6, 0));
+}
+
+/* corrimão — barra em madeira mais clara no topo do painel */
+#madeiras-tipos .esc-guarda-painel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--gr);
+  height: 100%;
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, .22), rgba(40, 22, 8, .18)),
+    var(--esc-madeira);
+  background-size: cover;
+  background-position: center;
+  background-color: #b98a5e;
+  box-shadow: 0 0 10px rgba(60, 34, 16, .25);
+}
+
+/* cada degrau recua em Y e sobe em Z conforme o índice */
+#madeiras-tipos .esc-degrau {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: translate3d(0,
+      calc((var(--n) - 1 - var(--i) * 2) * var(--sd) / 2),
+      calc((var(--i) * 2 - var(--n) + 1) * var(--sh) / 2));
+}
+
+/* todas as faces compartilham a MESMA textura — a escada é de uma madeira só;
+   a variação entre elas é só de luz (filter), como num render */
+#madeiras-tipos .esc-face {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background-image: var(--esc-madeira);
+  background-size: cover;
+  background-position: center;
+  background-color: #b98a5e;
+  backface-visibility: hidden;
+}
+
+/* piso do degrau — a face que se pisa */
+#madeiras-tipos .esc-topo {
+  width: var(--sw);
+  height: var(--td);
+  transform: translate(-50%, -50%) translateZ(calc(var(--st) / 2));
+  box-shadow: inset 0 0 0 1px rgba(60, 34, 16, .16),
+    0 10px 22px rgba(60, 34, 16, .18);
+}
+
+/* face inferior da peça */
+#madeiras-tipos .esc-base {
+  width: var(--sw);
+  height: var(--td);
+  transform: translate(-50%, -50%) translateZ(calc(var(--st) / -2)) rotateX(180deg);
+  filter: brightness(.5);
+}
+
+/* topo do degrau (bocel) — a espessura maciça vista de frente */
+#madeiras-tipos .esc-frente {
+  width: var(--sw);
+  height: var(--st);
+  transform: translate(-50%, -50%) rotateX(-90deg) translateZ(calc(var(--td) / 2));
+  filter: brightness(.84);
+}
+
+/* fundo da peça — fecha o volume quando a escada é girada por trás */
+#madeiras-tipos .esc-tras {
+  width: var(--sw);
+  height: var(--st);
+  transform: translate(-50%, -50%) rotateX(90deg) translateZ(calc(var(--td) / 2));
+  filter: brightness(.6);
+}
+
+/* cabeceiras — a espessura maciça vista de lado */
+#madeiras-tipos .esc-lat {
+  width: var(--st);
+  height: var(--td);
+}
+
+#madeiras-tipos .esc-lat-l {
+  transform: translate(-50%, -50%) rotateY(-90deg) translateZ(calc(var(--sw) / 2));
+  filter: brightness(.7);
+}
+
+#madeiras-tipos .esc-lat-r {
+  transform: translate(-50%, -50%) rotateY(90deg) translateZ(calc(var(--sw) / 2));
+  filter: brightness(.78);
+}
+
+/* ─── ESPELHO — fecha o degrau; junto com o piso forma o zigue-zague ───
+   Fica recuado do bocel (--bo), como numa escada revestida. */
+#madeiras-tipos .esc-esp {
+  /* cotas do espelho: altura livre, plano da frente e eixo em Z */
+  --eh: calc(var(--sh) - var(--st));
+  --ey: calc(var(--td) / 2 - var(--bo));
+  --ez: calc(var(--sh) / -2);
+}
+
+#madeiras-tipos .esc-esp-frente {
+  width: var(--sw);
+  height: var(--eh);
+  transform: translate(-50%, -50%) translate3d(0, var(--ey), var(--ez)) rotateX(-90deg);
+  filter: brightness(.8);
+}
+
+#madeiras-tipos .esc-esp-tras {
+  width: var(--sw);
+  height: var(--eh);
+  transform: translate(-50%, -50%) translate3d(0, calc(var(--ey) - var(--rt)), var(--ez)) rotateX(90deg);
+  filter: brightness(.5);
+}
+
+/* cantos do espelho — é a espessura deles que desenha a serrilha na lateral */
+#madeiras-tipos .esc-esp-lat-l,
+#madeiras-tipos .esc-esp-lat-r {
+  width: var(--eh);
+  height: var(--rt);
+}
+
+#madeiras-tipos .esc-esp-lat-l {
+  transform: translate(-50%, -50%) translate3d(0, calc(var(--ey) - var(--rt) / 2), var(--ez)) rotateY(-90deg) translateZ(calc(var(--sw) / 2));
+  filter: brightness(.66);
+}
+
+#madeiras-tipos .esc-esp-lat-r {
+  transform: translate(-50%, -50%) translate3d(0, calc(var(--ey) - var(--rt) / 2), var(--ez)) rotateY(90deg) translateZ(calc(var(--sw) / 2));
+  filter: brightness(.72);
+}
+
 /* Cada face do bloco — centrada na origem e girada para formar o cuboide */
 #madeiras-tipos .floor-face {
   position: absolute;
@@ -1487,6 +1704,16 @@
   #madeiras-tipos .mtipos-stage {
     --w: min(84vw, 360px);
     --t: clamp(26px, 9vw, 40px);
+  }
+
+  #madeiras-tipos .esc-stage {
+    --sw: min(56vw, 230px);
+    --sd: clamp(38px, 11vw, 60px);
+    --st: clamp(13px, 3.6vw, 18px);
+    --sh: clamp(28px, 8vw, 44px);
+    --w: var(--sw);
+    --h: calc(var(--n) * var(--sd));
+    --t: var(--sh);
   }
 
   #madeiras-tipos .mtipos-eyebrow {

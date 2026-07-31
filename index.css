@@ -1136,14 +1136,20 @@
      uma única dobra contínua de madeira (perfil em zigue-zague) */
   --rt: var(--st);
   --bo: 0px;
-  /* guarda-corpo: altura do vidro e espessura do corrimão */
+  /* guarda-corpo: altura do painel, espessura dele, e altura e largura da
+     barra do corrimão — o corrimão é de propósito mais largo que o painel */
   --gh: clamp(58px, 12vw, 86px);
-  --gr: clamp(5px, 1vw, 8px);
+  --gt: clamp(6px, 1.1vw, 10px);
+  --gr: clamp(11px, 2.2vw, 17px);
+  --grw: calc(var(--gt) + clamp(9px, 1.8vw, 15px));
   /* profundidade da peça do degrau: o passo (--sd) mais o bocel, para o
      degrau avançar sobre o espelho e os dois se encostarem sem folga */
   --td: calc(var(--sd) + var(--bo));
-  /* textura única de toda a escada — trocar aqui muda a madeira inteira */
+  /* textura única de toda a escada — trocar aqui muda a madeira inteira.
+     --esc-madeira-cor é o tom médio dessa textura: serve de cor de fundo e
+     de sangria nas emendas entre faces, então troque as duas juntas. */
   --esc-madeira: url('texturas/carvalho-europeu.jpg');
+  --esc-madeira-cor: #b98a5e;
   /* dimensões do palco: pegada da escada em planta */
   --w: var(--sw);
   --h: calc(var(--n) * var(--sd));
@@ -1163,8 +1169,10 @@
   touch-action: pan-y;
 }
 
-/* ─── GUARDA-CORPO — painel de madeira à direita, sobre a borda do degrau ───
-   Um plano só, paralelo à lateral da escada, inclinado no ângulo do lance. */
+/* ─── GUARDA-CORPO — peça de madeira à direita, sobre a borda dos degraus ───
+   Volume real, não um plano: o painel tem espessura (--gt) e o corrimão é uma
+   barra maciça (--grw × --gr) apoiada no topo dele, de propósito mais larga
+   que o painel, para sobrar a aba que se pega com a mão. */
 #madeiras-tipos .esc-guarda {
   position: absolute;
   left: 50%;
@@ -1179,49 +1187,185 @@
   --gl: calc(var(--n) * var(--sd) * 1.24);
   --gx: calc(var(--sw) / 2);
   --gz: calc(var(--gh) / 2 + var(--st));
+  /* CORTE NO PRUMO — as pontas do guarda-corpo são cortadas na vertical, não
+     em esquadria com o lance. Isso transforma cada face num paralelogramo:
+     quanto mais alto o ponto, mais ele avança no sentido da subida, na razão
+     tan(36°). --gcos converte medidas perpendiculares ao lance em verticais. */
+  --gtan: .7265;
+  --gcos: .809;
+  --gsin: .588;
+  --gsk: calc(var(--gh) * var(--gtan));
+  --gskr: calc(var(--gr) * var(--gtan));
 }
 
+/* Leva o conjunto para a borda direita dos degraus e o inclina no ângulo do
+   lance. Daqui para dentro trabalha-se num sistema próprio: X é a altura do
+   guarda-corpo (o topo fica no X negativo), Y corre ao longo do lance e Z é a
+   espessura — por isso as faces filhas não repetem toda essa conta. */
 #madeiras-tipos .esc-guarda-painel {
   position: absolute;
   left: 50%;
   top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  /* centro da barra do corrimão no eixo local X */
+  --gc: calc(var(--gh) / -2 - var(--gr) / 2);
+  transform: translate3d(var(--gx), 0, var(--gz)) rotateY(90deg) rotateZ(var(--ga));
+}
+
+/* faces do painel — as duas paredes, separadas pela espessura */
+#madeiras-tipos .esc-g-lado-a,
+#madeiras-tipos .esc-g-lado-b {
   width: var(--gh);
+  height: calc(var(--gl) + var(--gsk));
+}
+
+/* No sistema da face, x=0 é o topo do painel e y cresce no sentido da subida:
+   o topo avança --gsk além da base em cada ponta, e o que sobra é o recorte
+   com as duas extremidades no prumo. A face de trás leva o polígono espelhado
+   em x, porque o rotateY(180deg) inverte esse eixo. */
+#madeiras-tipos .esc-g-lado-a {
+  transform: translate(-50%, -50%) translateZ(calc(var(--gt) / 2));
+  clip-path: polygon(0 0, 0 calc(100% - var(--gsk)), 100% 100%, 100% var(--gsk));
+  filter: brightness(.92);
+}
+
+#madeiras-tipos .esc-g-lado-b {
+  transform: translate(-50%, -50%) translateZ(calc(var(--gt) / -2)) rotateY(180deg);
+  clip-path: polygon(100% 0, 100% calc(100% - var(--gsk)), 0 100%, 0 var(--gsk));
+  filter: brightness(.76);
+}
+
+/* rodapé — a espessura do painel vista por baixo, no encontro com os degraus */
+#madeiras-tipos .esc-g-base {
+  width: var(--gt);
   height: var(--gl);
-  transform: translate(-50%, -50%) translate3d(var(--gx), 0, var(--gz)) rotateY(90deg) rotateZ(var(--ga));
-  background-image: linear-gradient(100deg, rgba(255, 255, 255, .06), rgba(40, 22, 8, .3)),
-    var(--esc-madeira);
-  background-size: cover;
-  background-position: center;
-  background-color: #a8764a;
-  box-shadow: inset 0 0 0 1px rgba(60, 34, 16, .2);
-  backface-visibility: visible;
+  transform: translate(-50%, -50%) translate3d(calc(var(--gh) / 2), calc(var(--gsk) / 2), 0) rotateY(90deg);
+  filter: brightness(.5);
 }
 
-/* rodapé do painel — encontro com os degraus */
-#madeiras-tipos .esc-guarda-painel::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: calc(var(--gr) * .6);
-  height: 100%;
-  background: linear-gradient(270deg, rgba(30, 16, 6, .45), rgba(30, 16, 6, 0));
+/* corrimão — topo e laterais da barra */
+#madeiras-tipos .esc-g-corr-topo {
+  width: var(--grw);
+  height: var(--gl);
+  transform: translate(-50%, -50%) translate3d(calc(var(--gh) / -2 - var(--gr)), calc((var(--gsk) / 2 + var(--gskr)) * -1), 0) rotateY(-90deg);
+  filter: brightness(1.08);
 }
 
-/* corrimão — barra em madeira mais clara no topo do painel */
-#madeiras-tipos .esc-guarda-painel::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
+/* laterais da barra — é a altura delas (--gr) que dá corpo ao corrimão */
+#madeiras-tipos .esc-g-corr-a,
+#madeiras-tipos .esc-g-corr-b {
   width: var(--gr);
-  height: 100%;
-  background-image: linear-gradient(90deg, rgba(255, 255, 255, .22), rgba(40, 22, 8, .18)),
-    var(--esc-madeira);
-  background-size: cover;
-  background-position: center;
-  background-color: #b98a5e;
-  box-shadow: 0 0 10px rgba(60, 34, 16, .25);
+  height: calc(var(--gl) + var(--gskr));
+  --gcry: calc((var(--gsk) / 2 + var(--gskr) / 2) * -1);
+}
+
+#madeiras-tipos .esc-g-corr-a {
+  transform: translate(-50%, -50%) translate3d(var(--gc), var(--gcry), calc(var(--grw) / 2));
+  clip-path: polygon(0 0, 0 calc(100% - var(--gskr)), 100% 100%, 100% var(--gskr));
+  filter: brightness(.96);
+}
+
+#madeiras-tipos .esc-g-corr-b {
+  transform: translate(-50%, -50%) translate3d(var(--gc), var(--gcry), calc(var(--grw) / -2)) rotateY(180deg);
+  clip-path: polygon(100% 0, 100% calc(100% - var(--gskr)), 0 100%, 0 var(--gskr));
+  filter: brightness(.82);
+}
+
+/* barriga do corrimão — a aba que sobra para além do painel, vista por baixo */
+#madeiras-tipos .esc-g-corr-sob {
+  width: var(--grw);
+  height: var(--gl);
+  transform: translate(-50%, -50%) translate3d(calc(var(--gh) / -2), calc(var(--gsk) / -2), 0) rotateY(90deg);
+  filter: brightness(.6);
+}
+
+/* CABECEIRAS — as duas pontas, que são as seções no prumo. Ficam fora do painel
+   inclinado: aqui o sistema é o da escada (Z na vertical), então o corte
+   vertical sai de graça. O centro de cada seção é simplesmente a ponta do
+   lance decomposta em horizontal (--gcos) e vertical (--gsin) — o recuo do
+   topo se cancela entre as duas bordas. A altura é a medida perpendicular
+   esticada pelo corte inclinado (dividida por cos 36°). */
+#madeiras-tipos .esc-guarda {
+  --gcy: calc(var(--gl) * var(--gcos) / 2);
+  --gcz: calc(var(--gl) * var(--gsin) / 2);
+  /* quanto o centro da barra do corrimão sobe acima do centro do painel */
+  --gdz: calc((var(--gh) / 2 + var(--gr) / 2) / var(--gcos));
+}
+
+#madeiras-tipos .esc-g-cabec {
+  width: var(--gt);
+  height: calc(var(--gh) / var(--gcos));
+  filter: brightness(.68);
+}
+
+#madeiras-tipos .esc-g-cabec-f {
+  transform: translate(-50%, -50%) translate3d(var(--gx), var(--gcy), calc(var(--gz) - var(--gcz))) rotateX(-90deg);
+}
+
+#madeiras-tipos .esc-g-cabec-i {
+  transform: translate(-50%, -50%) translate3d(var(--gx), calc(var(--gcy) * -1), calc(var(--gz) + var(--gcz))) rotateX(90deg);
+}
+
+#madeiras-tipos .esc-g-corr-cabec {
+  width: var(--grw);
+  height: calc(var(--gr) / var(--gcos));
+  filter: brightness(.72);
+}
+
+#madeiras-tipos .esc-g-corr-cabec-f {
+  transform: translate(-50%, -50%) translate3d(var(--gx), var(--gcy), calc(var(--gz) - var(--gcz) + var(--gdz))) rotateX(-90deg);
+}
+
+#madeiras-tipos .esc-g-corr-cabec-i {
+  transform: translate(-50%, -50%) translate3d(var(--gx), calc(var(--gcy) * -1), calc(var(--gz) + var(--gcz) + var(--gdz))) rotateX(90deg);
+}
+
+/* ─── PEÇA ÚNICA — mesmo tratamento de veio que os degraus ───
+   Cada face vinha com a textura em `cover`, centrada na própria caixa, então o
+   desenho recomeçava a cada face e o guarda-corpo lia como tábuas coladas.
+   Todas estas faces têm a mesma orientação — a largura corre na seção (altura
+   do guarda-corpo) e a altura corre no sentido do lance —, então basta ancorar
+   todas na MESMA imagem, escalada pelo comprimento (uma passada só, sem
+   emenda), e deslocar cada uma pela sua posição na seção desenrolada:
+   corrimão → lateral da barra → face do painel → rodapé. O veio atravessa a
+   peça inteira e o corrimão deixa de parecer uma tábua colada por cima. */
+#madeiras-tipos .esc-g-lado-a,
+#madeiras-tipos .esc-g-lado-b,
+#madeiras-tipos .esc-g-base,
+#madeiras-tipos .esc-g-corr-topo,
+#madeiras-tipos .esc-g-corr-a,
+#madeiras-tipos .esc-g-corr-b,
+#madeiras-tipos .esc-g-corr-sob {
+  background-size: auto var(--gl);
+  background-repeat: no-repeat;
+}
+
+#madeiras-tipos .esc-g-corr-topo {
+  background-position: 0 0;
+}
+
+#madeiras-tipos .esc-g-corr-a,
+#madeiras-tipos .esc-g-corr-b {
+  background-position: calc(var(--grw) * -1) 0;
+}
+
+#madeiras-tipos .esc-g-lado-a,
+#madeiras-tipos .esc-g-lado-b {
+  background-position: calc((var(--grw) + var(--gr)) * -1) 0;
+  /* sombra do corrimão sobre o painel: a barra é mais larga e faz sombra na
+     face. No sistema da face o topo é a borda esquerda, daí o inset lateral. */
+  box-shadow: 0 0 0 1px var(--esc-madeira-cor),
+    inset 6px 0 8px -6px rgba(40, 22, 8, .55);
+}
+
+#madeiras-tipos .esc-g-base {
+  background-position: calc((var(--grw) + var(--gr) + var(--gh)) * -1) 0;
+}
+
+#madeiras-tipos .esc-g-corr-sob {
+  background-position: calc(var(--gr) * -1) 0;
 }
 
 /* cada degrau recua em Y e sobe em Z conforme o índice */
@@ -1246,8 +1390,15 @@
   background-image: var(--esc-madeira);
   background-size: cover;
   background-position: center;
-  background-color: #b98a5e;
+  background-color: var(--esc-madeira-cor);
   backface-visibility: hidden;
+  /* SANGRIA — cada face é um elemento separado, e onde duas se encontram o
+     navegador suaviza as duas bordas, deixando passar um fio do fundo: são
+     aquelas linhas claras entre piso e espelho. Um anel de 1px na cor da
+     madeira transborda a face e cobre a emenda, então a escada lê como uma
+     peça maciça só. O filter de cada face escurece o anel junto com ela, e
+     por isso a sangria acompanha a luz da face em vez de virar contorno. */
+  box-shadow: 0 0 0 1px var(--esc-madeira-cor);
 }
 
 /* piso do degrau — a face que se pisa */
@@ -1255,7 +1406,8 @@
   width: var(--sw);
   height: var(--td);
   transform: translate(-50%, -50%) translateZ(calc(var(--st) / 2));
-  box-shadow: inset 0 0 0 1px rgba(60, 34, 16, .16),
+  /* mesma sangria das demais faces, mais a sombra projetada no degrau abaixo */
+  box-shadow: 0 0 0 1px var(--esc-madeira-cor),
     0 10px 22px rgba(60, 34, 16, .18);
 }
 
@@ -1267,12 +1419,20 @@
   filter: brightness(.5);
 }
 
-/* topo do degrau (bocel) — a espessura maciça vista de frente */
+/* FRENTE DO DEGRAU — bocel e espelho numa face só.
+   Com --bo em 0 os dois ocupam exatamente o mesmo plano vertical, então não há
+   por que desenhá-los separados: emenda de faces coplanares é justamente onde
+   a sangria aparece, porque cada uma põe seu anel de cor chapada e as duas
+   somam uma faixa lisa cortando o veio. Uma face só de altura --sh cobre o
+   bocel e o espelho de uma vez, e a emenda deixa de existir.
+   (Se um dia --bo voltar a ser > 0, o bocel avança sobre o espelho e aí sim
+   eles precisam voltar a ser duas faces.) */
 #madeiras-tipos .esc-frente {
   width: var(--sw);
-  height: var(--st);
-  transform: translate(-50%, -50%) rotateX(-90deg) translateZ(calc(var(--td) / 2));
-  filter: brightness(.84);
+  height: var(--sh);
+  transform: translate(-50%, -50%) rotateX(-90deg)
+    translate3d(0, calc((var(--sh) - var(--st)) / 2), calc(var(--td) / 2));
+  filter: brightness(.82);
 }
 
 /* fundo da peça — fecha o volume quando a escada é girada por trás */
@@ -1308,11 +1468,10 @@
   --ez: calc(var(--sh) / -2);
 }
 
+/* quem desenha a frente do espelho agora é .esc-frente, numa peça só com o
+   bocel — esta face virou a emenda que queríamos eliminar */
 #madeiras-tipos .esc-esp-frente {
-  width: var(--sw);
-  height: var(--eh);
-  transform: translate(-50%, -50%) translate3d(0, var(--ey), var(--ez)) rotateX(-90deg);
-  filter: brightness(.8);
+  display: none;
 }
 
 #madeiras-tipos .esc-esp-tras {
@@ -1329,14 +1488,62 @@
   height: var(--rt);
 }
 
+/* mesma luz das cabeceiras do piso: as duas ficam no mesmo plano lateral
+   (x = ±--sw/2), e é essa continuidade que faz a serrilha ler como o corte de
+   uma tábua só, dobrada, em vez de peças empilhadas */
 #madeiras-tipos .esc-esp-lat-l {
   transform: translate(-50%, -50%) translate3d(0, calc(var(--ey) - var(--rt) / 2), var(--ez)) rotateY(-90deg) translateZ(calc(var(--sw) / 2));
-  filter: brightness(.66);
+  filter: brightness(.7);
 }
 
 #madeiras-tipos .esc-esp-lat-r {
   transform: translate(-50%, -50%) translate3d(0, calc(var(--ey) - var(--rt) / 2), var(--ez)) rotateY(90deg) translateZ(calc(var(--sw) / 2));
-  filter: brightness(.72);
+  filter: brightness(.78);
+}
+
+/* ─── PERFIL CONTÍNUO — o piso e a frente são a MESMA dobra de madeira ───
+   Cada face tinha a textura em `cover`, centrada na própria caixa, então o veio
+   recomeçava a cada face e o degrau lia como peças coladas. Aqui as duas passam
+   a mostrar recortes de uma imagem só, na mesma escala (--sw de largura),
+   deslocada pela distância já percorrida ao longo do perfil: 0 no piso e --td
+   ao dobrar para a frente. O veio atravessa a dobra e o degrau vira uma tábua.
+   A altura sai por `auto` de propósito: mantém a proporção da foto e garante
+   que a imagem seja mais alta que o perfil, então nenhum recorte repete. */
+#madeiras-tipos .esc-topo,
+#madeiras-tipos .esc-frente {
+  background-size: var(--sw) auto;
+  background-repeat: no-repeat;
+}
+
+#madeiras-tipos .esc-topo {
+  background-position: 0 0;
+}
+
+#madeiras-tipos .esc-frente {
+  background-position: 0 calc(var(--td) * -1);
+}
+
+/* Mesma ideia nas cabeceiras. Aqui a cabeceira do piso e a do espelho também
+   dividem o plano lateral, mas formam um Γ, não um retângulo, então não dá
+   para fundi-las numa face só como na frente. O que dá é ancorar as duas na
+   mesma imagem: as duas têm a mesma orientação (o eixo X da textura corre na
+   altura e o Y no sentido do lance), então basta deslocar cada uma pela sua
+   posição no perfil para o veio atravessar o degrau inteiro e a serrilha ler
+   como o corte de uma tábua só. */
+#madeiras-tipos .esc-lat,
+#madeiras-tipos .esc-esp-lat-l,
+#madeiras-tipos .esc-esp-lat-r {
+  background-size: calc(var(--sh) + var(--st)) auto;
+  background-repeat: no-repeat;
+}
+
+#madeiras-tipos .esc-lat {
+  background-position: calc(var(--st) / 2 - var(--sh)) 0;
+}
+
+#madeiras-tipos .esc-esp-lat-l,
+#madeiras-tipos .esc-esp-lat-r {
+  background-position: calc(var(--st) / -2) calc(var(--rt) - var(--td));
 }
 
 /* Cada face do bloco — centrada na origem e girada para formar o cuboide */
@@ -1680,6 +1887,15 @@
 
   #madeiras-tipos .mtipos-intro {
     max-width: 44rem;
+  }
+
+  /* em coluna única a escada passa a ficar EMBAIXO do texto, e o lance
+     projetado ultrapassa a caixa do palco também por cima (~76–102px, o
+     guarda-corpo é o ponto mais alto). Sem esta folga o painel entra por
+     cima do último parágrafo. Espelha o margin-bottom que já cobre a sobra
+     de baixo, então acompanha o mesmo --sh em qualquer tela. */
+  #madeiras-tipos .esc-stage {
+    margin-top: calc(var(--sh) * 2.6);
   }
 
   #madeiras-tipos .mtipos-react {

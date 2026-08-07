@@ -8,7 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link rel="preload" as="image" href="autoload/Hero.webp" fetchpriority="high">
+  <link rel="preload" as="image"
+    href="https://images.weserv.nl/?url=parket.com.br%2Fwp-content%2Fuploads%2F2025%2F10%2FPRO_ESC-10.jpg&amp;output=webp&amp;q=80&amp;w=2000"
+    fetchpriority="high">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=arrow_back,arrow_upward,chevron_left,chevron_right,close,search&display=swap" rel="stylesheet">
   <script src="assets/js/components.js"></script>
@@ -26,7 +28,7 @@
     }
   </script>
   <link rel="stylesheet" href="catalogo.css?v=4">
-  <link rel="stylesheet" href="index.css?v=58">
+  <link rel="stylesheet" href="index.css?v=59">
 </head>
 
 <body class="antialiased selection:bg-white selection:text-black">
@@ -55,7 +57,9 @@
   <!-- ─── HERO · imagem full-bleed que desliza para o lado revelando o título ─── -->
   <section id="hero-viewport" class="hero-split">
     <div id="hero-sticky">
-      <div id="hero-bg" class="hero-media" style="background-image: url('autoload/Hero.webp');"></div>
+      <div id="hero-bg" class="hero-media"
+        style="background-image: url('https://images.weserv.nl/?url=parket.com.br%2Fwp-content%2Fuploads%2F2025%2F10%2FPRO_ESC-10.jpg&amp;output=webp&amp;q=80&amp;w=2000');">
+      </div>
       <span class="hero-wordmark" aria-hidden="true">escada</span>
       <div id="hero-content" class="hero-copy">
         <span class="hero-eyebrow">Coleção 2026</span>
@@ -169,16 +173,16 @@
 
   <!-- ─── PRODUCT SECTIONS (injected) ─── -->
   <main id="products" class="relative z-10 bg-black"></main>
-  <!-- ─── MADEIRAS · tradicional vs engenheirado (escada 3D fechada e girável) ─── -->
-  <section id="madeiras-tipos" data-screen-label="Tipos de escada">
+  <!-- ─── MADEIRAS · a escada em madeira nobre (escada 3D fechada e girável) ─── -->
+  <section id="madeiras-tipos" data-screen-label="Madeira nobre">
     <div class="mtipos-inner">
       <!-- topo: título + intro à esquerda, escada 3D à direita -->
       <div class="mtipos-top">
         <div class="mtipos-copy">
           <header class="mtipos-head fade-up">
             <span class="mtipos-eyebrow">Sobre as madeiras</span>
-            <h2 class="mtipos-title">Escada tradicional ou escada engenheirada?
-              <span class="mtipos-sub">Entenda as diferenças</span>
+            <h2 class="mtipos-title">A escada em madeira nobre
+              <span class="mtipos-sub">O que está por trás de cada degrau</span>
             </h2>
           </header>
 
@@ -190,8 +194,8 @@
               proporciona, a escada é um elemento técnico e estrutural da construção. Características como estabilidade
               dimensional, resistência às variações de umidade, espessura do degrau e desempenho ao longo do tempo fazem
               toda a diferença.</p>
-            <p class="mtipos-lead fade-up" style="transition-delay:.12s">A principal comparação é entre o degrau
-              tradicional, em madeira maciça, e o degrau engenheirado.</p>
+            <p class="mtipos-lead fade-up" style="transition-delay:.12s">Cada lance é desenhado, usinado e montado
+              sob medida para a obra.</p>
           </div>
         </div>
 
@@ -316,74 +320,35 @@
         </div>
       </div>
 
-      <div class="mtipos-cards">
+      <div class="mtipos-atributos">
 
-  <!-- Escada Tradicional -->
-  <article class="mtipos-card fade-up visible">
+        <article class="mtipos-atr fade-up">
+          <span class="mtipos-atr-num">01</span>
+          <h3 class="mtipos-atr-title">Sob medida</h3>
+          <p>Degrau, espelho e guarda-corpo são executados a partir das medidas da obra, com precisão milimétrica e
+            encaixe limpo entre as peças.</p>
+        </article>
 
-    <span class="mtipos-badge">Madeira Maciça</span>
+        <article class="mtipos-atr fade-up" style="transition-delay:.08s">
+          <span class="mtipos-atr-num">02</span>
+          <h3 class="mtipos-atr-title">Madeira nobre à vista</h3>
+          <p>O veio, o tom e o desenho vêm da própria árvore. Nenhum degrau é igual ao outro, e o conjunto ganha
+            unidade na seleção das peças.</p>
+        </article>
 
-    <h3 class="mtipos-card-title">Escada Tradicional</h3>
+        <article class="mtipos-atr fade-up" style="transition-delay:.16s">
+          <span class="mtipos-atr-num">03</span>
+          <h3 class="mtipos-atr-title">Peça estrutural</h3>
+          <p>A escada é elemento técnico da construção: espessura do degrau, fixação e comportamento da madeira ao
+            longo do tempo são definidos ainda no projeto.</p>
+        </article>
 
-    <p class="mtipos-intro">
-      Degraus produzidos a partir de uma única peça de madeira, preservando toda a
-      autenticidade e a beleza natural da matéria-prima.
-    </p>
-
-    <div class="mtipos-divider"></div>
-
-    <h4>Características</h4>
-
-    <ul class="mtipos-list">
-      <li>Degrau em peça única de madeira maciça</li>
-      <li>Visual totalmente natural</li>
-      <li>Movimentação natural da madeira</li>
-      <li>Pode apresentar frestas e empenamentos</li>
-      <li>Mais indicada para ambientes com clima estável</li>
-    </ul>
-
-    <div class="mtipos-footer">
-      <h4>Ideal para</h4>
-      <p>Projetos que valorizam a autenticidade da madeira maciça.</p>
-    </div>
-
-  </article>
-
-  <!-- Escada Engenheirada -->
-  <article class="mtipos-card mtipos-card--eng fade-up visible" style="transition-delay:.08s">
-
-    <span class="mtipos-badge">Alta Estabilidade</span>
-
-    <h3 class="mtipos-card-title">Escada Engenheirada</h3>
-
-    <p class="mtipos-intro">
-      Degraus e espelhos em estrutura multicamadas, desenvolvidos para reduzir
-      movimentações naturais, mantendo toda a beleza e a textura da madeira nobre.
-    </p>
-
-    <div class="mtipos-divider"></div>
-
-    <h4>Vantagens</h4>
-
-    <ul class="mtipos-list">
-      <li>100% madeira natural</li>
-      <li>Estrutura multicamadas</li>
-      <li>Maior estabilidade dimensional</li>
-      <li>Resistência às variações climáticas</li>
-      <li>Permite degraus de maior vão e desenhos sofisticados</li>
-      <li>Excelente desempenho em escadas revestidas, estruturais e flutuantes</li>
-    </ul>
-
-    <div class="mtipos-footer">
-      <h4>Ideal para</h4>
-      <p>Residências e projetos de alto padrão que exigem máxima estabilidade.</p>
-    </div>
-
-  </article>
-
-</div>
-      <p class="mtipos-outro fade-up">O resultado é uma escada que mantém a elegância da madeira maciça, mas com
-        desempenho superior, oferecendo mais segurança, conforto e estabilidade para o dia a dia.</p>
+      </div>
+      <!-- Fecho da seção, em bloco destacado -->
+      <div class="mtipos-fecho fade-up">
+        <p class="mtipos-outro">O resultado é uma escada que atravessa o uso diário sem perder a elegância:
+          firme ao pisar, silenciosa e bonita de perto, degrau a degrau.</p>
+      </div>
 
       <!-- Bloco final: como a madeira reage -->
       <div class="mtipos-react">
@@ -399,9 +364,10 @@
           <p class="fade-up" style="transition-delay:.06s">É fácil perceber como essa resposta natural pode representar
             um desafio quando utilizada em escadas, que estão regularmente sujeitas a grandes variações de temperatura,
             ao uso intenso e à presença frequente de umidade.</p>
-          <p class="fade-up" style="transition-delay:.12s">Felizmente, a pesquisa e o desenvolvimento trouxeram soluções
-            para esse comportamento natural. Com a evolução das estruturas engenheiradas modernas, a madeira e a
-            estabilidade finalmente podem coexistir em perfeita harmonia.</p>
+          <p class="fade-up" style="transition-delay:.12s">Por isso o projeto da escada trabalha com esse
+            comportamento, e não contra ele: a espécie é escolhida conforme o ambiente, as peças são preparadas para o
+            teor de umidade do local e a fixação acomoda o movimento natural da madeira. Bem executada, a escada se
+            estabiliza e segue firme por décadas.</p>
         </div>
       </div>
     </div>

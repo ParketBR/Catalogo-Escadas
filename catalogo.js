@@ -254,7 +254,7 @@
         {
           key: 'escadas',
           title: 'Escadas',
-          desc: 'Escadas revestidas, estruturais e flutuantes desenvolvidas com madeiras nobres como Ipê, Cumaru, Carvalho Europeu e Freijó. Cada degrau, espelho e guarda-corpo executado sob medida — com precisão milimétrica, acabamento impecável e total coerência com a linguagem arquitetônica do projeto.',
+          desc: 'Escadas revestidas, estruturais e flutuantes desenvolvidas com madeiras nobres como Ipê, Cumaru, Carvalho Europeu e Freijó. Cada degrau, espelho e guarda-corpo executado sob medida, com precisão milimétrica, acabamento impecável e total coerência com a linguagem arquitetônica do projeto.',
           cover: 'escadas/hero.webp',
           videos: [
             { type: 'youtube', id: 'J82KxeHE1Yg', vertical: true, title: 'O detalhe que define o projeto premium é aquele que ninguém vê' },

@@ -1216,6 +1216,7 @@
         // Ordenadas por luminância média da textura: da mais clara à mais escura.
         // Descrições oficiais de parket.com.br (seção Revestimentos).
         const ESPECIES = [
+          ['pinho-de-riga', 'Pinho de Riga', 'Clara e de tom amarelado suave, com nós marcantes que remetem à madeira das construções históricas brasileiras.'],
           ['carvalho-europeu', 'Carvalho Europeu', 'Nobreza atemporal em tons claros e acetinados, com veios suaves que trazem equilíbrio entre tradição e modernidade.'],
           ['freijo', 'Freijó', 'De coloração amendoada e desenho discreto, confere sofisticação serena e um acabamento naturalmente elegante.'],
           ['cumaru', 'Cumaru', 'Madeira extremamente resistente, de cor castanho-avermelhada, indicada para projetos que exigem durabilidade e imponência.'],
@@ -1227,7 +1228,7 @@
         // Monta as imagens empilhadas (crossfade por opacity)
         ESPECIES.forEach(([slug, label], i) => {
           const img = document.createElement('img');
-          img.src = `texturas/${slug}.jpg`;
+          img.src = `texturas/${slug}.webp`;
           img.alt = '';
           img.loading = 'lazy';
           img.decoding = 'async';
@@ -1285,11 +1286,16 @@
           palco.classList.add('is-usado');
         };
 
-        stage.style.setProperty('--texturas-p', '0');
+        // Com uma única espécie não há para onde navegar: as duas setas nascem
+        // desativadas e a dica de arraste sai de cena (o ir() nunca roda, então
+        // ele não teria como ajustar nada disso depois).
+        const unica = n === 1;
+        stage.style.setProperty('--texturas-p', unica ? '1' : '0');
         setas.forEach(b => {
-          if (Number(b.dataset.dir) < 0) b.disabled = true;
+          if (unica || Number(b.dataset.dir) < 0) b.disabled = true;
           b.addEventListener('click', () => ir(idx + Number(b.dataset.dir), Number(b.dataset.dir)));
         });
+        if (unica) { palco.classList.add('is-usado'); wrap.classList.add('texturas-unica'); }
 
         // ── roda/trackpad horizontal (deltaX) e shift+scroll
         let acumulado = 0;

@@ -1150,7 +1150,7 @@
   /* textura única de toda a escada — trocar aqui muda a madeira inteira.
      --esc-madeira-cor é o tom médio dessa textura: serve de cor de fundo e
      de sangria nas emendas entre faces, então troque as duas juntas. */
-  --esc-madeira: url('texturas/carvalho-europeu.jpg');
+  --esc-madeira: url('texturas/carvalho-europeu.webp');
   --esc-madeira-cor: #b98a5e;
   /* dimensões do palco: pegada da escada em planta */
   --w: var(--sw);
